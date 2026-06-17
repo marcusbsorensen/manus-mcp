@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "manus": {
+      "command": "node",
+      "args": ["/home/user/manus-mcp/dist/index.js"],
+      "env": {
+        "MANUS_API_KEY": "<your-manus-api-key>"
+      }
+    }
+  }
+}
