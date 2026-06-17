@@ -37,8 +37,8 @@ export function registerFileTools(server: McpServer, client: ManusClient): void 
   );
 
   server.tool(
-    "manus_download_output",
-    "Fetch all messages for a completed task in chronological order, including assistant messages and attachment URLs. Use verbose=true to include tool invocations and agent reasoning.",
+    "manus_list_output_messages",
+    "Fetch all messages for a completed task in chronological order, including assistant messages and attachment URLs (as JSON, not saved to disk). Use verbose=true to include tool invocations and agent reasoning. To save attachment files to disk, use manus_download_output instead.",
     {
       task_id: z.string().describe("Task ID to download output from"),
       verbose: z.boolean().optional().describe("Include tool calls, plan updates, and agent reasoning"),

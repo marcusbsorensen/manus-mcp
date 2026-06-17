@@ -1,13 +1,36 @@
 const BASE_URL = "https://api.manus.ai/v2";
+const BASE_URL_V1 = "https://api.manus.ai/v1";
 
 export class ManusClient {
   private headers: Record<string, string>;
+  private apiKey: string;
 
   constructor(apiKey: string) {
+    this.apiKey = apiKey;
     this.headers = {
       "x-manus-api-key": apiKey,
       "Content-Type": "application/json",
     };
+  }
+
+  /**
+   * Legacy v1 GET. Tasks created before the v2 upgrade are only reachable here,
+   * and v1 uses a different auth header (API_KEY) and has no `ok` envelope.
+   */
+  async getV1<T>(path: string): Promise<T> {
+    const res = await fetch(`${BASE_URL_V1}${path}`, {
+      method: "GET",
+      headers: { accept: "application/json", "content-type": "application/json", API_KEY: this.apiKey },
+    });
+    const text = await res.text();
+    let json: unknown;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      throw new Error(`Manus v1 non-JSON response (${res.status}): ${text.slice(0, 200)}`);
+    }
+    if (!res.ok) throw new Error(`Manus v1 error (${res.status}): ${text.slice(0, 200)}`);
+    return json as T;
   }
 
   async get<T>(path: string, params?: Record<string, string | number | boolean | undefined>): Promise<T> {
